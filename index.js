@@ -37,4 +37,5 @@ const orderRouter = require(__dirname+'/controller/order')
 app.use('/api/order',orderRouter)
 
 
-app.listen(8000, () => console.log("Listening Port 8000..."));
+app.listen(process.env.PORT || 8000, () => console.log("Listening Port 8000..."));
+
