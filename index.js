@@ -29,6 +29,9 @@ app.get("/", function (req, res) {
 app.get("/ecommerce", function (req, res) {
   res.send("Ecommerce Website");
 });
+app.get("/helloo", function (req, res) {
+  res.send("Hello Website");
+});
 
 const userRouter = require(__dirname + "/controller/user");
 app.use("/api/user", userRouter);
