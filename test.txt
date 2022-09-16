@@ -1,6 +1,4 @@
 thinh--- commit
-<<<<<<< HEAD
-<<<<<<< HEAD
 h_anh--- commit
 =======
 binh ---- commit
@@ -9,4 +7,4 @@ H.Anh----- commits
 binh ---- commit
 Khoa-----commit
 HAnh--- commit
->>>>>>> c7e30da3509b12c3252e0fcb617ec027eadc71c6
+
