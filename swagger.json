@@ -1,0 +1,86 @@
+{
+    "swagger":"2.0",
+    "info": {
+        "version" : "1.0.0",
+        "title" : "Ecommverce App",
+        "description" : "My Ecommcerce Project API",
+        "license" : {
+            "name" : "MIT",
+            "url":"https://opensource.org/licenses/MIT"
+        }
+    },
+    "host" : "localhost:8000",
+    "basePath" : "/",
+    "tags" : [
+        {
+            "name" : "Ecommerce",
+            "description" : "Ecommerce API"
+        }
+    ],
+    "schemes": ["http"],
+    "consumes": ["application/json"],
+    "produces" : ["application/json"],
+    "paths" : {
+        "api/user/" :{
+            "get" :{
+                "tags" : ["User"],
+                "summary" : "Get All Users",
+                "responses":{
+                    "200" : {
+                        "message": "OK",
+                        "description" : "OK",
+                        "schema":{
+                            "$ref" :  "#/definitions/ServiceResponse"
+                        }
+                    }
+                }
+            }
+        
+        }
+
+    },
+    "definitions" : {
+        "user" : {
+            "required" : ["userID","username","password"],
+            "properties" : {
+                "_id" : {
+                    "type" : "integer"
+                },
+                "userID": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "login_type": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                },
+                "cartID": {
+                    "type": "string"
+                }
+            }
+        },
+        "ServiceResponse" : {
+            "properties" : {
+                "message" : {
+                    "type" : "String"
+                },
+                "data" : {
+                    "type" : "array",
+                    "items" : {
+                        "$ref" :"#/definitions/user"
+                    }
+                }
+            }
+        }
+    }
+}

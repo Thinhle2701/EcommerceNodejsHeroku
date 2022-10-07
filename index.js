@@ -4,8 +4,10 @@ const res = require("express/lib/response");
 const app = express();
 const user = require("./model/user");
 const cart = require("./model/cart");
-const ordeer = require("./model/order");
-
+const order = require("./model/order");
+const product = require("./model/product");
+const swaggerUI = require("swagger-ui-express"),
+  swaggerDocument = require("./swagger.json");
 const mongoose = require("mongoose");
 const { stringify } = require("querystring");
 const { Router } = require("express");
@@ -19,7 +21,25 @@ mongoose.connect(
     else console.log("db error");
   }
 );
+const test_date = new Date();
+console.log(test_date);
 
+// const get_order_list = () => {
+//   try {
+//     order
+//       .find()
+//       .sort({ dateSort: -1 })
+//       .find(function (err, posts) {
+//         if (err) return res.status(500).send({ message: "No Posts." });
+//         // res.status(200).send(posts);
+//         console.log(posts);
+//       });
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
+
+// get_order_list();
 var cors = require("cors");
 app.use(cors());
 
@@ -39,8 +59,12 @@ app.use("/api/user", userRouter);
 const cartRouter = require(__dirname + "/controller/cart");
 app.use("/api/cart", cartRouter);
 
+const productRouter = require(__dirname + "/controller/product");
+app.use("/api/product", productRouter);
+
 const orderRouter = require(__dirname + "/controller/order");
 app.use("/api/order", orderRouter);
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.listen(process.env.PORT || 8000, () =>
   console.log("Listening Port 8000...")

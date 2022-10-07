@@ -48,6 +48,13 @@ const orderSchema = new Schema({
   status: {
     type: String,
   },
+  dateSort: {
+    type: Date,
+  },
+  statistic: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = mongoose.model("Order", orderSchema);

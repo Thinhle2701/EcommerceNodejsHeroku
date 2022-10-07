@@ -26,6 +26,10 @@ const userSchema = new Schema({
   cartID: {
     type: String,
   },
+  user_type: {
+    type: String,
+    required: true
+  }
 });
 
 module.exports = mongoose.model("userLogin", userSchema);

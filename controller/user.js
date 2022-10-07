@@ -5,9 +5,8 @@ const req = require("express/lib/request");
 const bcrypt = require("bcrypt");
 const argon2 = require("argon2");
 
-
 router.post("/add_user", async (req, res) => {
-  const { username, password, email, url } = req.body;
+  const { username, password, email, url, userType } = req.body;
   const User = await user.findOne({ username });
   if (User) {
     return res
@@ -23,7 +22,7 @@ router.post("/add_user", async (req, res) => {
       countUser++;
       newId = "User_0" + countUser;
     } else {
-      countAdmin++;
+      countUser++;
       newId = "User_" + countUser;
     }
     try {
@@ -34,6 +33,7 @@ router.post("/add_user", async (req, res) => {
         email: email,
         login_type: "normal",
         url: url,
+        user_type: userType,
       });
       await userNew.save();
       res.json({ success: true, message: "Create user successfully" });
@@ -44,7 +44,7 @@ router.post("/add_user", async (req, res) => {
 });
 
 router.post("/add_user_external", async (req, res) => {
-  const { username, email, login_type, url, cartID } = req.body;
+  const { username, email, login_type, url, cartID, userType } = req.body;
   const User = await user.findOne({ username });
   if (User) {
     return res
@@ -59,7 +59,7 @@ router.post("/add_user_external", async (req, res) => {
       countUser++;
       newId = "User_0" + countUser;
     } else {
-      countAdmin++;
+      countUser++;
       newId = "User_" + countUser;
     }
     try {
@@ -71,6 +71,7 @@ router.post("/add_user_external", async (req, res) => {
         login_type: login_type,
         url: url,
         cartID: cartID,
+        user_type: userType,
       });
       await userNew.save();
       res.json({
@@ -150,6 +151,28 @@ router.post("/find_google_account", async (req, res) => {
       username: username,
       email: email,
       login_type: "google",
+    });
+    res.send(User);
+
+    console.log(User);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
+router.post("/find_facebook_account", async (req, res) => {
+  const { username, email } = req.body;
+  if (!username || !email) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Missing username or email" });
+  }
+  try {
+    const User = await user.findOne({
+      username: username,
+      email: email,
+      login_type: "facebook",
     });
     res.send(User);
 
