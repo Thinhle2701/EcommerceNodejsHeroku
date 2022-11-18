@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const argon2 = require("argon2");
 
 router.post("/add_user", async (req, res) => {
-  const { username, password, email, url, userType } = req.body;
+  const { username, password, email, url, userType, cartID } = req.body;
   const User = await user.findOne({ username });
   if (User) {
     return res
@@ -34,6 +34,7 @@ router.post("/add_user", async (req, res) => {
         login_type: "normal",
         url: url,
         user_type: userType,
+        cartID: cartID,
       });
       await userNew.save();
       res.json({ success: true, message: "Create user successfully" });
@@ -197,6 +198,39 @@ router.put("/update_cart/:id", (req, res) => {
         if (req.body.cartID) {
           // foundObject.line = req.body.line_items;
           foundObject.cartID = req.body.cartID;
+        }
+        foundObject.save(function (err, updatedObject) {
+          if (err) {
+            console.log(err);
+            res.status(500).send();
+          } else {
+            res.send(updatedObject);
+            console.log(updatedObject);
+          }
+        });
+      }
+    }
+  });
+});
+
+router.put("/update/:userID", (req, res) => {
+  var id = req.params.userID;
+  const userUpdate = req.body;
+  user.findOne({ userID: id }, function (err, foundObject) {
+    if (err) {
+      console.log(err);
+      res.status(500).send();
+    } else {
+      if (!foundObject) {
+        res.status(404).send();
+      } else {
+        if (userUpdate) {
+          // // foundObject.line = req.body.line_items;
+          foundObject.url = req.body.url;
+          foundObject.email = req.body.email;
+          foundObject.address = req.body.address;
+          foundObject.phone = req.body.phone;
+          // console.log(userUpdate)
         }
         foundObject.save(function (err, updatedObject) {
           if (err) {

@@ -1,4 +1,5 @@
 const express = require("express");
+require("dotenv").config();
 const req = require("express/lib/request");
 const res = require("express/lib/response");
 const app = express();
@@ -11,6 +12,9 @@ const swaggerUI = require("swagger-ui-express"),
 const mongoose = require("mongoose");
 const { stringify } = require("querystring");
 const { Router } = require("express");
+const argon2 = require("argon2");
+const jwt = require("jsonwebtoken");
+const verifyToken = require("./middleware/auth");
 
 app.use(express.json());
 
@@ -51,6 +55,41 @@ app.get("/ecommerce", function (req, res) {
 });
 app.get("/helloo", function (req, res) {
   res.send("Hello Website");
+});
+
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Missing user name or password" });
+  }
+  try {
+    const User = await user.findOne({ username });
+    if (!User) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Incorrect user name or password" });
+    }
+    const passwordValid = await argon2.verify(User.password, password);
+    if (!passwordValid) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Incorrect user name or password" });
+    }
+
+    // res.send(User);
+    const accessToken = jwt.sign(
+      User.toJSON(),
+      process.env.ACCESS_TOKEN_SECRET
+    );
+
+    // console.log(User);
+    res.json({ User, accessToken });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
 });
 
 const userRouter = require(__dirname + "/controller/user");

@@ -103,12 +103,26 @@ router.get("/get_ord/:orderid", async (req, res) => {
   }
 });
 
+router.get("/", async (req, res) => {
+  try {
+    order
+      .find()
+      .sort({ dateSort: -1 })
+      .find(function (err, posts) {
+        if (err) return res.status(500).send({ message: "No Posts." });
+        res.status(200).send(posts);
+      });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 router.get("/find_order_cus/:customerid", async (req, res) => {
   const cusID = req.params.customerid;
   try {
     order
       .find({ customerID: cusID })
-      .sort({ date: -1 })
+      .sort({ dateSort: -1 })
       .find(function (err, posts) {
         if (err) return res.status(500).send({ message: "No Posts." });
         res.status(200).send({ order: posts });
@@ -125,22 +139,37 @@ router.delete("/delete/:orderid", async (req, res) => {
   if (!Ord) {
     res.status(400).send("Your Order is not exist");
   } else {
-    const result = await order.deleteOne({ orderID: order_id });
-    res.status(200).send(result);
-  }
-});
-
-router.get("/", async (req, res) => {
-  try {
-    order
-      .find()
-      .sort({ dateSort: -1 })
-      .find(function (err, posts) {
-        if (err) return res.status(500).send({ message: "No Posts." });
-        res.status(200).send(posts);
-      });
-  } catch (err) {
-    console.log(err);
+    if (Ord.statistic === true) {
+      const url = "https://api.chec.io/v1/orders/" + order_id;
+      await axios
+        .get(url, {
+          headers: {
+            "X-Authorization":
+              "sk_test_4513288b8800ade424556f7c24a4c3c7b5c579c9d2e5a",
+          },
+        })
+        .then(async function (response) {
+          // console.log(response.data.live);
+          for (let i = 0; i < response.data.order.line_items.length; i++) {
+            const Pro = await product.findOne({
+              id: response.data.order.line_items[i].product_id,
+            });
+            if (Pro) {
+              Pro.numberOnSale =
+                Pro.numberOnSale - response.data.order.line_items[i].quantity;
+              await Pro.save();
+            }
+          }
+        })
+        .catch((error) => {
+          console.log("error " + error);
+        });
+      const result = await order.deleteOne({ orderID: order_id });
+      res.status(200).send(result);
+    } else {
+      const result = await order.deleteOne({ orderID: order_id });
+      res.status(200).send(result);
+    }
   }
 });
 
@@ -231,29 +260,28 @@ router.put("/update_status/:ordid", (req, res) => {
               foundObject.statistic = true;
               console.log(foundObject.orderID);
               const url =
-                "https://api.chec.io/v1/checkouts/tokens/" +
-                foundObject.orderID;
+                "https://api.chec.io/v1/orders/" + foundObject.orderID;
               await axios
                 .get(url, {
                   headers: {
                     "X-Authorization":
-                      "pk_4513267273233fc7080de820c6f5b5630e0fadf031a5a",
+                      "sk_test_4513288b8800ade424556f7c24a4c3c7b5c579c9d2e5a",
                   },
                 })
                 .then(async function (response) {
                   // console.log(response.data.live);
                   for (
                     let i = 0;
-                    i < response.data.live.line_items.length;
+                    i < response.data.order.line_items.length;
                     i++
                   ) {
                     const Pro = await product.findOne({
-                      id: response.data.live.line_items[i].product_id,
+                      id: response.data.order.line_items[i].product_id,
                     });
                     if (Pro) {
                       Pro.numberOnSale =
                         Pro.numberOnSale +
-                        response.data.live.line_items[i].quantity;
+                        response.data.order.line_items[i].quantity;
                       await Pro.save();
                     }
                   }
@@ -265,30 +293,60 @@ router.put("/update_status/:ordid", (req, res) => {
           } else {
             if (foundObject.statistic == true) {
               foundObject.statistic = false;
+              // const url =
+              //   "https://api.chec.io/v1/checkouts/tokens/" +
+              //   foundObject.orderID;
+              // await axios
+              //   .get(url, {
+              //     headers: {
+              //       "X-Authorization":
+              //         "pk_4513267273233fc7080de820c6f5b5630e0fadf031a5a",
+              //     },
+              //   })
+              //   .then(async function (response) {
+              //     // console.log(response.data.live);
+              //     for (
+              //       let i = 0;
+              //       i < response.data.live.line_items.length;
+              //       i++
+              //     ) {
+              //       const Pro = await product.findOne({
+              //         id: response.data.live.line_items[i].product_id,
+              //       });
+              //       if (Pro) {
+              //         Pro.numberOnSale =
+              //           Pro.numberOnSale -
+              //           response.data.live.line_items[i].quantity;
+              //         await Pro.save();
+              //       }
+              //     }
+              //   })
+              //   .catch((error) => {
+              //     console.log("error " + error);
+              //   });
               const url =
-                "https://api.chec.io/v1/checkouts/tokens/" +
-                foundObject.orderID;
+                "https://api.chec.io/v1/orders/" + foundObject.orderID;
               await axios
                 .get(url, {
                   headers: {
                     "X-Authorization":
-                      "pk_4513267273233fc7080de820c6f5b5630e0fadf031a5a",
+                      "sk_test_4513288b8800ade424556f7c24a4c3c7b5c579c9d2e5a",
                   },
                 })
                 .then(async function (response) {
                   // console.log(response.data.live);
                   for (
                     let i = 0;
-                    i < response.data.live.line_items.length;
+                    i < response.data.order.line_items.length;
                     i++
                   ) {
                     const Pro = await product.findOne({
-                      id: response.data.live.line_items[i].product_id,
+                      id: response.data.order.line_items[i].product_id,
                     });
                     if (Pro) {
                       Pro.numberOnSale =
                         Pro.numberOnSale -
-                        response.data.live.line_items[i].quantity;
+                        response.data.order.line_items[i].quantity;
                       await Pro.save();
                     }
                   }

@@ -28,8 +28,14 @@ const userSchema = new Schema({
   },
   user_type: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
+  phone: {
+    type: String,
+  },
+  address: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("userLogin", userSchema);
