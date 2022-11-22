@@ -1,5 +1,7 @@
 {
     "swagger":"2.0",
+    "enableCORS": true,
+    "Access-Control-Allow-Origin": "*",
     "info": {
         "version" : "1.0.0",
         "title" : "Apple Store",
