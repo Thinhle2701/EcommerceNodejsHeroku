@@ -2,14 +2,14 @@
     "swagger":"2.0",
     "info": {
         "version" : "1.0.0",
-        "title" : "Ecommerce App",
+        "title" : "Apple Store",
         "description" : "My Ecommcerce Project API",
         "license" : {
             "name" : "MIT",
             "url":"https://opensource.org/licenses/MIT"
         }
     },
-    "host" : "localhost:8000",
+    "host" : "apple-store-back-end.herokuapp.com",
     "basePath" : "/",
     "tags" : [
         {
@@ -25,6 +25,7 @@
             "get" :{
                 "tags" : ["User"],
                 "summary" : "Get All Users",
+                "Access-Control-Allow-Headers":"Content-Type",
                 "responses":{
                     "200" : {
                         "message": "OK",

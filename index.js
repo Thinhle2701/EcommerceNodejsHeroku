@@ -28,24 +28,15 @@ mongoose.connect(
 const test_date = new Date();
 console.log(test_date);
 
-// const get_order_list = () => {
-//   try {
-//     order
-//       .find()
-//       .sort({ dateSort: -1 })
-//       .find(function (err, posts) {
-//         if (err) return res.status(500).send({ message: "No Posts." });
-//         // res.status(200).send(posts);
-//         console.log(posts);
-//       });
-//   } catch (err) {
-//     console.log(err);
-//   }
-// };
-
-// get_order_list();
 var cors = require("cors");
 app.use(cors());
+// app.use(function (req, res, next) {
+//   res.setHeader('Access-Control-Allow-Origin', '*');
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+//   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+//   res.setHeader('Access-Control-Allow-Credentials', true);
+//   next();
+// });
 
 app.get("/", function (req, res) {
   res.send("Hello World");
