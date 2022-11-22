@@ -1,7 +1,5 @@
 {
     "swagger":"2.0",
-    "enableCORS": true,
-    "Access-Control-Allow-Origin": "*",
     "info": {
         "version" : "1.0.0",
         "title" : "Apple Store",
@@ -19,7 +17,7 @@
             "description" : "Ecommerce API"
         }
     ],
-    "schemes": ["http"],
+    "schemes": ["https"],
     "consumes": ["application/json"],
     "produces" : ["application/json"],
     "paths" : {
@@ -38,7 +36,6 @@
                     }
                 }
             }
-        
         },
         "/api/user/{id}" :{
             "get" :{
