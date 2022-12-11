@@ -9,7 +9,7 @@
             "url":"https://opensource.org/licenses/MIT"
         }
     },
-    "host" : "apple-store-back-end.herokuapp.com",
+    "host" : "apple-store-deploy.herokuapp.com",
     "basePath" : "/",
     "tags" : [
         {
